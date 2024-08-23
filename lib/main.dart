@@ -11,8 +11,8 @@ class Contact {
 }
 
 // A singleton. Class which can be initialized only once
-class ContactBook {
-  ContactBook._sharedInstance();
+class ContactBook extends ValueNotifier<List<Contact>>{
+  ContactBook._sharedInstance() : super([]);
 
   static final ContactBook _shared = ContactBook._sharedInstance();
 
@@ -22,7 +22,13 @@ class ContactBook {
 
   int get length => _contacts.length;
 
-  void addContact({required Contact contact}) => _contacts.add(contact);
+  void addContact({required Contact contact}){
+    final ValueNotifier notifier;
+
+
+    _contacts.add(contact);
+
+  }
 
   void removeContact({required Contact contact}) => _contacts.remove(contact);
 
