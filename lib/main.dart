@@ -1,5 +1,4 @@
 import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -11,43 +10,31 @@ class Contact {
   final String name;
   final String id;
 
-  Contact({required this.name}): id = Uuid().v4( ); //using uuid genera unique idenifier
+  Contact({required this.name}) : id = Uuid().v4(); // Using uuid to generate a unique identifier
 }
 
-// A singleton. Class which can be initialized only once
-class ContactBook extends ValueNotifier<List<Contact>>{   // value notifier holds a value.
+// A singleton class that can be initialized only once
+class ContactBook extends ValueNotifier<List<Contact>> { // ValueNotifier holds a value
   ContactBook._sharedInstance() : super([]);
 
   static final ContactBook _shared = ContactBook._sharedInstance();
 
   factory ContactBook() => _shared;
 
- final List<Contact> _contacts = [];
-
   int get length => value.length;
 
-  void addContact({required Contact contact}){
-    final ValueNotifier notifier;
-
+  void addContact({required Contact contact}) {
     final contacts = value;
-
     contacts.add(contact);
-
     notifyListeners();
-
   }
 
-  void removeContact({required Contact contact}){
-    //_contacts.remove(contact);
-
+  void removeContact({required Contact contact}) {
     final contacts = value;
-    if(contacts.contains(contact)){
+    if (contacts.contains(contact)) {
       contacts.remove(contact);
       notifyListeners();
     }
-    notifyListeners();
-    
-
   }
 
   Contact? contact({required int atIndex}) =>
@@ -66,10 +53,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const HomePage(),
-
       routes: {
-        '/new_contact' : (context) => const NewContactView(),
-
+        '/new_contact': (context) => const NewContactView(),
       },
     );
   }
@@ -86,35 +71,33 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Contact List'),
       ),
-      body: ValueListenableBuilder(valueListenable: ContactBook(), builder: (context, value, child) { //any change to the value will trigger a build whenever the value changes
-        final contacts = value as List<Contact>;
-
-        return
-        ListView.builder(
-          itemCount: contactBook.length,
-          itemBuilder: (context, index) {
-         //   final contact = contactBook.contact(atIndex: index);
-            final contact = contacts[index];
-            if (contact != null) {
-              return ListTile(
-                title: Text(contact.name),
+      body: ValueListenableBuilder(
+        valueListenable: ContactBook(),
+        builder: (context, List<Contact> contacts, child) {
+          return ListView.builder(
+            itemCount: contactBook.length,
+            itemBuilder: (context, index) {
+              final contact = contacts[index];
+              return Dismissible(
+                onDismissed: (direction) {
+                  ContactBook().removeContact(contact: contact);
+                },
+                key: ValueKey(contact.id),
+                child: Material(
+                  color: Colors.white,
+                  elevation: 6,
+                  child: ListTile(
+                    title: Text(contact.name),
+                  ),
+                ),
               );
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-       );
-
-
-      },
+            },
+          );
+        },
       ),
-      
-      
-      
-
       floatingActionButton: FloatingActionButton(
-        onPressed: () async{
-         await Navigator.pushNamed(context, '/new_contact');
+        onPressed: () async {
+          await Navigator.pushNamed(context, '/new_contact');
         },
         child: const Icon(Icons.add),
       ),
@@ -133,13 +116,15 @@ class _NewContactViewState extends State<NewContactView> {
   late final TextEditingController _controller;
 
   @override
-  void setState(VoidCallback fn) {
+  void initState() {
+    super.initState();
     _controller = TextEditingController();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -156,11 +141,10 @@ class _NewContactViewState extends State<NewContactView> {
             onPressed: () {
               final contact = Contact(name: _controller.text);
               ContactBook().addContact(contact: contact);
-
               Navigator.of(context).pop();
             },
             child: const Text("Add contact"),
-          )
+          ),
         ],
       ),
     );
