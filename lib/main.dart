@@ -69,7 +69,7 @@ class HomePage extends StatelessWidget {
           }
         },
       ),
-      floatingActionButton:  FloatingActionButton(onPressed: (){}, child: const Icon(Icons.add),),
+      floatingActionButton:  FloatingActionButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>NewContactView()));}, child: const Icon(Icons.add),),
     );
   }
 }
@@ -117,7 +117,7 @@ class _NewContactViewState extends State<NewContactView> {
             final contact = Contact(name: _controller.text);
             ContactBook().addContact(contact: contact);
 
-            
+            Navigator.of(context).pop();
             
             
             
