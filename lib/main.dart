@@ -76,11 +76,11 @@ class HomePage extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async{
           // Navigator.push(context,
           //     MaterialPageRoute(builder: (context) => NewContactView()));
 
-          Navigator.pushNamed(context, '/new_contact');
+         await Navigator.pushNamed(context, '/new_contact');
         },
         child: const Icon(Icons.add),
       ),
