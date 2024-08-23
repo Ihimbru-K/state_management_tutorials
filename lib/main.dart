@@ -22,7 +22,7 @@ class ContactBook extends ValueNotifier<List<Contact>>{   // value notifier hold
 
   factory ContactBook() => _shared;
 
-  final List<Contact> _contacts = [];
+ final List<Contact> _contacts = [];
 
   int get length => value.length;
 
@@ -32,12 +32,8 @@ class ContactBook extends ValueNotifier<List<Contact>>{   // value notifier hold
     final contacts = value;
 
     contacts.add(contact);
-    //value = contacts;
 
     notifyListeners();
-
-
-   // value.add(contact);
 
   }
 
@@ -90,12 +86,15 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Contact List'),
       ),
-      body: ValueListenableBuilder(valueListenable: ContactBook(), builder: (contact, value, child) {
+      body: ValueListenableBuilder(valueListenable: ContactBook(), builder: (context, value, child) { //any change to the value will trigger a build whenever the value changes
+        final contacts = value as List<Contact>;
+
         return
         ListView.builder(
           itemCount: contactBook.length,
           itemBuilder: (context, index) {
-            final contact = contactBook.contact(atIndex: index);
+         //   final contact = contactBook.contact(atIndex: index);
+            final contact = contacts[index];
             if (contact != null) {
               return ListTile(
                 title: Text(contact.name),
@@ -104,12 +103,10 @@ class HomePage extends StatelessWidget {
               return const SizedBox.shrink();
             }
           },
-      ;  );
+       );
 
 
       },
-
-        
       ),
       
       
@@ -117,9 +114,6 @@ class HomePage extends StatelessWidget {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () async{
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => NewContactView()));
-
          await Navigator.pushNamed(context, '/new_contact');
         },
         child: const Icon(Icons.add),
