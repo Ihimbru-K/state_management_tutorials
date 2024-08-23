@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,6 +15,7 @@ class ContactBook {
   ContactBook._sharedInstance();
 
   static final ContactBook _shared = ContactBook._sharedInstance();
+
   factory ContactBook() => _shared;
 
   final List<Contact> _contacts = [];
@@ -23,6 +23,7 @@ class ContactBook {
   int get length => _contacts.length;
 
   void addContact({required Contact contact}) => _contacts.add(contact);
+
   void removeContact({required Contact contact}) => _contacts.remove(contact);
 
   Contact? contact({required int atIndex}) =>
@@ -41,6 +42,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const HomePage(),
+
+      routes: {
+        '/new_contact' : (context) => const NewContactView(),
+
+      },
     );
   }
 }
@@ -69,12 +75,18 @@ class HomePage extends StatelessWidget {
           }
         },
       ),
-      floatingActionButton:  FloatingActionButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>NewContactView()));}, child: const Icon(Icons.add),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: (context) => NewContactView()));
+
+          Navigator.pushNamed(context, '/new_contact');
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
-
-
 
 class NewContactView extends StatefulWidget {
   const NewContactView({super.key});
@@ -84,12 +96,11 @@ class NewContactView extends StatefulWidget {
 }
 
 class _NewContactViewState extends State<NewContactView> {
-
   late final TextEditingController _controller;
 
   @override
   void setState(VoidCallback fn) {
-  _controller = TextEditingController();
+    _controller = TextEditingController();
   }
 
   @override
@@ -97,43 +108,27 @@ class _NewContactViewState extends State<NewContactView> {
     _controller.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: Column(
         children: [
-
           TextField(
             controller: _controller,
-            decoration: const InputDecoration(
-              hintText: "Input contact name"
-            ),
-
+            decoration: const InputDecoration(hintText: "Input contact name"),
           ),
-          
-          TextButton(onPressed: (){
-            final contact = Contact(name: _controller.text);
-            ContactBook().addContact(contact: contact);
+          TextButton(
+            onPressed: () {
+              final contact = Contact(name: _controller.text);
+              ContactBook().addContact(contact: contact);
 
-            Navigator.of(context).pop();
-            
-            
-            
-          }, child: const Text("Add contact"),)
-
-
-
+              Navigator.of(context).pop();
+            },
+            child: const Text("Add contact"),
+          )
         ],
       ),
-
-
-
-
-
-
     );
   }
 }
-
