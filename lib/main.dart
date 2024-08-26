@@ -10,7 +10,8 @@ class Contact {
   final String name;
   final String id;
 
-  Contact({required this.name}) : id = Uuid().v4(); // Using uuid to generate a unique identifier
+  Contact({required this.name}) : id = Uuid().v4();
+  // Using uuid to generate a unique identifier
 }
 
 // A singleton class that can be initialized only once
